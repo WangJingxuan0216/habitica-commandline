@@ -40,3 +40,4 @@ Special thanks to @philadams
 
 ### To-do List
 - [ ] function for mounting
+- [ ] fix display problem after completeing a checklist item
