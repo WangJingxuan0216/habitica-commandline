@@ -142,7 +142,7 @@ def get_task_ids(tids):
 def updated_task_list(tasks, tids, cid = None):
     for tid in sorted(tids, reverse=True):
         if cid != None:
-            del(tasks[tid]['checklist'][cid])
+            tasks[tid]['checklist'][cid]['completed'] = True
         else: del(tasks[tid])
     return tasks
 
@@ -163,6 +163,10 @@ def qualitative_task_score_from_value(value):
     scores = ['*', '**', '***', '****', '*****', '******', '*******']
     breakpoints = [-20, -10, -1, 1, 5, 10]
     return scores[bisect(breakpoints, value)]
+
+def sleep_or_not(data):
+    if data: return "sleeping"
+    else: return "awake"
 
 
 def cli():
@@ -246,6 +250,7 @@ def cli():
         stats = user.get('stats', '')
         items = user.get('items', '')
         food_count = sum(items['food'].values())
+        user_status = sleep_or_not(user['preferences']['sleep'])
 
         # gather quest progress information (yes, janky. the API
         # doesn't make this stat particularly easy to grab...).
@@ -320,6 +325,7 @@ def cli():
         print('%s %s' % ('Pet:'.rjust(len_ljust, ' '), pet))
         print('%s %s' % ('Mount:'.rjust(len_ljust, ' '), mount))
         print('%s %s' % ('Quest:'.rjust(len_ljust, ' '), quest))
+        print('%s %s' % ('User Status:'.rjust(len_ljust, ' '), user_status))
 
     # GET/POST habits
     elif args['<command>'] == 'habits':
@@ -436,15 +442,18 @@ def cli():
         pets = user['items']['pets']
         food = user['items']['food']
         available_food = [key for key in food if food[key] != 0]
-        first_pet = sorted(pets.items(), key = lambda x: x[1])[0][0]
-        if len(available_food):
-            feeding_responese = raw_input("Do you want to feed "+first_pet+"? [y/n] ")
-            if feeding_responese == 'y': 
+        available_pet = [i for i,j in sorted(pets.items(), key = lambda x: x[1], reverse=True) if j !=-1 ]
+        if not len(available_food) and not len(available_pet):
+            first_pet = available_pet[0]
+            feeding_responese = raw_input("Do you want to feed "+first_pet+"?[y/n] ")
+            if feeding_responese == 'y':
                 for item in available_food:
                     pet_response = hbt.user.feed(_inventory1 = first_pet, _inventory2 = item, _method = 'post')
                     print pet_response['message']
             else:
                 print colorprint("Ok, pets need more care, so try to feed them next time", RED)
+        else:
+            print "Oops, no food available"
 
     ##GET/POST pets
     elif args['<command>'] == 'egg':
@@ -462,9 +471,28 @@ def cli():
                 hatch_response = hbt.user.hatch(_inventory1 = available_hatching[0][0], _inventory2 = available_hatching[0][1], _method = 'post')
                 print hatch_response['message']
             else:
-                print "No egg can be hatched"
+                print colorprint("Ok, you are so boring", RED)
         else:
-            print colorprint("Ok, you are so boring", RED)
+            print "No egg can be hatched"
+
+    ##POST sleep
+    elif args['<command>'] == 'sleep':
+        user_status = hbt.user()['data']['preferences']['sleep']
+        if user_status:
+            print "You are sleeping!"
+            awake = raw_input("Do you want to leave inn now?[y/n] ")
+            if awake == 'y': 
+                hbt.user.sleep(_method='post')
+                print "Work hard, so you can play harder!"
+            else: 
+                print "Ok, sleep tight!"
+        else:
+            sleeping = raw_input("Do you want to sleep now?[y/n] ")
+            if sleeping == 'y': 
+                hbt.user.sleep(_method='post')
+                print "Have a nice dream :)"
+            else: 
+                print "Then continue your work, please!"
 
 if __name__ == '__main__':
     cli()
