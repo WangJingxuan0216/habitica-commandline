@@ -32,6 +32,9 @@ Usage: habitica [--version] [--help]
       todos add_cl <task-id>  Add checklist item with description <task>
       server                  Show status of Habitica service
       home                    Open tasks page in default browser
+      pet                     Check pet and feed if possible
+      egg                     Check egg and hatch if possible
+      sleep                   Check sleeping status and moving in/leaving inn
 
 ### Examples
 

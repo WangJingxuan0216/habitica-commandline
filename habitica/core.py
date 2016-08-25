@@ -195,11 +195,14 @@ def cli():
       dailies undo            Mark daily <task-id> incomplete
       todos                   List todo tasks
       todos done <task-id>    Mark one or more todo <task-id> completed
+      todos done <task-id>.<checklist-id> Mark one todo <checklist-id> in <task-id> completed
       todos add <task>        Add todo with description <task>
       todos add_cl <task-id>  Add checklist item with description <task>
       server                  Show status of Habitica service
       home                    Open tasks page in default browser
-      pet                     Show pets info
+      pet                     Check pet and feed if possible
+      egg                     Check egg and hatch if possible
+      sleep                   Check sleeping status and moving in/leaving inn
 
     For `habits up|down`, `dailies done|undo`, and `todos done`, you can pass
     one or more <task-id> parameters, using either comma-separated lists or
