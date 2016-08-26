@@ -328,7 +328,7 @@ def cli():
         print('%s %s' % ('Pet:'.rjust(len_ljust, ' '), pet))
         print('%s %s' % ('Mount:'.rjust(len_ljust, ' '), mount))
         print('%s %s' % ('Quest:'.rjust(len_ljust, ' '), quest))
-        print('%s %s' % ('User Status:'.rjust(len_ljust, ' '), user_status))
+        print('%s %s' % ('Status:'.rjust(len_ljust, ' '), user_status))
 
     # GET/POST habits
     elif args['<command>'] == 'habits':
