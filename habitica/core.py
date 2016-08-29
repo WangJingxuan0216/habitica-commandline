@@ -446,7 +446,7 @@ def cli():
         food = user['items']['food']
         available_food = [key for key in food if food[key] != 0]
         available_pet = [i for i,j in sorted(pets.items(), key = lambda x: x[1], reverse=True) if j !=-1 ]
-        if not len(available_food) and not len(available_pet):
+        if len(available_food) and len(available_pet):
             first_pet = available_pet[0]
             feeding_responese = raw_input("Do you want to feed "+first_pet+"?[y/n] ")
             if feeding_responese == 'y':
