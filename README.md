@@ -43,5 +43,5 @@ Special thanks to @philadams
 
 ### To-do List
 - [ ] function for mounting
-- [x] fix display problem after completeing a checklist item
-- [x] function for sleeping/waking up
+- [ ] quest is not showing correctly in status
+- [ ] feeding food doesn't work
