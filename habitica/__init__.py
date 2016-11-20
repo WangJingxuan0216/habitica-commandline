@@ -1,2 +1,1 @@
-from . import api
-from .core import cli
+from .feeder import rssreader

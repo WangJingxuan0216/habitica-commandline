@@ -13,18 +13,14 @@ TODO:philadams get logger named, like requests!
 
 
 from bisect import bisect
-import json
 import logging
-import netrc
 import os.path
-from datetime import datetime, timedelta
 from time import sleep
 from webbrowser import open_new_tab
 import itertools
 from docopt import docopt
-
 from . import api
-
+import json
 from pprint import pprint
 
 try:
@@ -34,7 +30,6 @@ except:
 
 RED = "\033[91m"
 GREEN = "\033[92m"
-DATE_FORMAT = "%Y-%m-%d"
 VERSION = 'habitica version 0.0.13'
 TASK_VALUE_BASE = 0.9747  # http://habitica.wikia.com/wiki/Task_Value
 HABITICA_REQUEST_WAIT_TIME = 0.5  # time to pause between concurrent requests
@@ -98,7 +93,6 @@ def load_cache(configfile):
 
     if not cache.has_section(SECTION_CACHE_QUEST):
         cache.add_section(SECTION_CACHE_QUEST)
-
     return cache
 
 
@@ -260,34 +254,31 @@ def cli():
         # because hitting /content downloads a crapload of stuff, we
         # cache info about the current quest in cache.
         quest = 'Not currently on a quest'
-        if (party is not None and
-                party.get('quest', '') and
-                party.get('quest').get('active')):
-
-            quest_key = party['quest']['key']
-
+        # if (party is not None and party.get('quest', '')):
+        if party is not None and party['data'].get('quest') and party['data']['quest']['active']:
+            quest_key = party['data']['quest']['key']
             if cache.get(SECTION_CACHE_QUEST, 'quest_key') != quest_key:
                 # we're on a new quest, update quest key
                 logging.info('Updating quest information...')
                 content = hbt.content()
                 quest_type = ''
                 quest_max = '-1'
-                quest_title = content['quests'][quest_key]['text']
+                quest_title = content['data']['quests'][quest_key]['text']
 
                 # if there's a content/quests/<quest_key/collect,
                 # then drill into .../collect/<whatever>/count and
                 # .../collect/<whatever>/text and get those values
-                if content.get('quests', {}).get(quest_key, {}).get('collect'):
+                if content['data'].get('quests', {}).get(quest_key, {}).get('collect'):
                     logging.debug("\tOn a collection type of quest")
                     quest_type = 'collect'
-                    clct = content['quests'][quest_key]['collect'].values()[0]
+                    clct = content['data']['quests'][quest_key]['collect'].values()[0]
                     quest_max = clct['count']
                 # else if it's a boss, then hit up
                 # content/quests/<quest_key>/boss/hp
-                elif content.get('quests', {}).get(quest_key, {}).get('boss'):
+                elif content['data'].get('quests', {}).get(quest_key, {}).get('boss'):
                     logging.debug("\tOn a boss/hp type of quest")
                     quest_type = 'hp'
-                    quest_max = content['quests'][quest_key]['boss']['hp']
+                    quest_max = content['data']['quests'][quest_key]['boss']['hp']
 
                 # store repr of quest info from /content
                 cache = update_quest_cache(CACHE_CONF,
@@ -299,10 +290,10 @@ def cli():
             # now we use /party and quest_type to figure out our progress!
             quest_type = cache.get(SECTION_CACHE_QUEST, 'quest_type')
             if quest_type == 'collect':
-                qp_tmp = party['quest']['progress']['collect']
-                quest_progress = qp_tmp.values()[0]['count']
+                qp_tmp = party['data']['quest']['progress']['collect']
+                quest_progress = qp_tmp.values()[0]
             else:
-                quest_progress = party['quest']['progress']['hp']
+                quest_progress = party['data']['quest']['progress']['hp']
 
             quest = '%s/%s "%s"' % (
                     str(int(quest_progress)),
@@ -328,7 +319,7 @@ def cli():
         print('%s %s' % ('Pet:'.rjust(len_ljust, ' '), pet))
         print('%s %s' % ('Mount:'.rjust(len_ljust, ' '), mount))
         print('%s %s' % ('Quest:'.rjust(len_ljust, ' '), quest))
-        print('%s %s' % ('User Status:'.rjust(len_ljust, ' '), user_status))
+        print('%s %s' % ('Status:'.rjust(len_ljust, ' '), user_status))
 
     # GET/POST habits
     elif args['<command>'] == 'habits':
@@ -446,7 +437,7 @@ def cli():
         food = user['items']['food']
         available_food = [key for key in food if food[key] != 0]
         available_pet = [i for i,j in sorted(pets.items(), key = lambda x: x[1], reverse=True) if j !=-1 ]
-        if not len(available_food) and not len(available_pet):
+        if len(available_food) and len(available_pet):
             first_pet = available_pet[0]
             feeding_responese = raw_input("Do you want to feed "+first_pet+"?[y/n] ")
             if feeding_responese == 'y':
