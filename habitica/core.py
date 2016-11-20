@@ -30,6 +30,7 @@ except:
 
 RED = "\033[91m"
 GREEN = "\033[92m"
+DATE_FORMAT = "%Y%m%d"
 VERSION = 'habitica version 0.0.13'
 TASK_VALUE_BASE = 0.9747  # http://habitica.wikia.com/wiki/Task_Value
 HABITICA_REQUEST_WAIT_TIME = 0.5  # time to pause between concurrent requests
