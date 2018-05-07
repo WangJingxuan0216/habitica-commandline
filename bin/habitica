@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 try:
     import habitica
 except ImportError:
@@ -7,4 +8,4 @@ except ImportError:
     import habitica
 
 if __name__ == '__main__':
-habitica.cli()
+	habitica.cli()
