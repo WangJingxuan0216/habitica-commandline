@@ -3,6 +3,25 @@
 ### Abstract
 This tool is updated from a version created by philadams(https://github.com/philadams/habitica) according to newly update on API v3.
 
+###Configure
+
+You'll need to let the tool know how to connect to your Habitica account. To do this, you'll need to add the following credentials section in the file ~/.config/habitica/auth.cfg (you may need to create the folder(s) and file):
+
+```
+[Habitica]
+url = https://habitica.com
+login = USER_ID
+password = API_KEY
+```
+
+There's a template for this file at auth.cfg.sample.
+
+Replace USER_ID and API_KEY with the corresponding tokens from your Habitica settings>API page.
+
+You can replace url as needed, for example if you're self-hosting a Habitica server.
+
+Lastly, remember to chmod 600 ~/.config/habitica/auth.cfg to keep your credentials secret.
+
 ### Available Functions
 Usage: habitica [--version] [--help]
                     <command> [<args>...] [--dif=<d>] [--date=<d>] [--task=<d>]
