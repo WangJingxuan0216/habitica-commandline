@@ -20,8 +20,6 @@ from webbrowser import open_new_tab
 import itertools
 from docopt import docopt
 from . import api
-import json
-from pprint import pprint
 
 try:
     import ConfigParser as configparser
@@ -440,15 +438,15 @@ def cli():
         available_pet = [i for i,j in sorted(pets.items(), key = lambda x: x[1], reverse=True) if j !=-1 ]
         if len(available_food) and len(available_pet):
             first_pet = available_pet[0]
-            feeding_responese = raw_input("Do you want to feed "+first_pet+"?[y/n] ")
+            feeding_responese = input("Do you want to feed "+first_pet+"?[y/n] ")
             if feeding_responese == 'y':
                 for item in available_food:
                     pet_response = hbt.user.feed(_inventory1 = first_pet, _inventory2 = item, _method = 'post')
-                    print pet_response['message']
+                    print(pet_response['message'])
             else:
-                print colorprint("Ok, pets need more care, so try to feed them next time", RED)
+                print(colorprint("Ok, pets need more care, so try to feed them next time", RED))
         else:
-            print "Oops, no food available"
+            print("Oops, no food available")
 
     ##GET/POST pets
     elif args['<command>'] == 'egg':
@@ -461,33 +459,33 @@ def cli():
         possible_hatching = list(itertools.product(available_eggs, available_potions))
         available_hatching = [i for i in possible_hatching if not pets.get(i[0]+"-"+i[1])]
         if len(available_hatching):
-            hatching_responese = raw_input("Do you want to hatch a "+available_hatching[0][1]+" "+available_hatching[0][0]+"? [y/n] ")
+            hatching_responese = input("Do you want to hatch a "+available_hatching[0][1]+" "+available_hatching[0][0]+"? [y/n] ")
             if hatching_responese == 'y':
                 hatch_response = hbt.user.hatch(_inventory1 = available_hatching[0][0], _inventory2 = available_hatching[0][1], _method = 'post')
-                print hatch_response['message']
+                print(hatch_response['message'])
             else:
-                print colorprint("Ok, you are so boring", RED)
+                print(colorprint("Ok, you are so boring", RED))
         else:
-            print "No egg can be hatched"
+            print("No egg can be hatched")
 
     ##POST sleep
     elif args['<command>'] == 'sleep':
         user_status = hbt.user()['data']['preferences']['sleep']
         if user_status:
-            print "You are sleeping!"
-            awake = raw_input("Do you want to leave inn now?[y/n] ")
+            print("You are sleeping!")
+            awake = input("Do you want to leave inn now?[y/n] ")
             if awake == 'y': 
                 hbt.user.sleep(_method='post')
-                print "Work hard, so you can play harder!"
+                print("Work hard, so you can play harder!")
             else: 
-                print "Ok, sleep tight!"
+                print("Ok, sleep tight!")
         else:
-            sleeping = raw_input("Do you want to sleep now?[y/n] ")
+            sleeping = input("Do you want to sleep now?[y/n] ")
             if sleeping == 'y': 
                 hbt.user.sleep(_method='post')
-                print "Have a nice dream :)"
+                print("Have a nice dream :)")
             else: 
-                print "Then continue your work, please!"
+                print("Then continue your work, please!")
 
 if __name__ == '__main__':
     cli()
